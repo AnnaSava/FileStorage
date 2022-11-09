@@ -15,4 +15,8 @@
     <ProjectReference Include="..\FileStorage\FileStorage.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Development\unsafe_uploads\" />
+  </ItemGroup>
+
 </Project>
