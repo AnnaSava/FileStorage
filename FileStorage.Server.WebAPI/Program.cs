@@ -1,5 +1,6 @@
 using FileStorage;
 using FileStorage.Data.MongoDb;
+using FileStorage.Helpers.Images;
 using FileStorage.Server.WebAPI;
 using Microsoft.Extensions.Options;
 
@@ -14,7 +15,10 @@ builder.Services.Configure<DatabaseSettings>(
 builder.Services.AddSingleton<IDatabaseSettings>(sp =>
     sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
+// TODO Почему синглтон?
 builder.Services.AddSingleton<IFileRepository, FileRepository>();
+
+builder.Services.AddScoped<ImageEditor>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

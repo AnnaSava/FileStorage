@@ -1,4 +1,5 @@
-﻿using FileStorage.Models;
+﻿using FileStorage.Helpers.Images;
+using FileStorage.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -12,13 +13,16 @@ namespace FileStorage.Server.WebAPI.Controllers
     {
         private readonly IWebHostEnvironment _env;
         private readonly IFileRepository _fileRepository;
+        private readonly ImageEditor _imageEditor;
         private readonly ILogger<FilesController> _logger;
 
         public ImagesController(IFileRepository fileRepository,
+            ImageEditor imageEditor,
             IWebHostEnvironment env,
             ILogger<FilesController> logger)
         {
             _fileRepository = fileRepository;
+            _imageEditor = imageEditor;
             _env = env;
             _logger = logger;
         }
@@ -82,6 +86,21 @@ namespace FileStorage.Server.WebAPI.Controllers
 
                             await using FileStream fs = new(path, FileMode.Create);
                             await file.CopyToAsync(fs);
+
+                            var cropFileName = Path.GetRandomFileName();
+                            var cropPath = Path.Combine(_env.ContentRootPath,
+                                _env.EnvironmentName, "unsafe_uploads",
+                                cropFileName);
+
+                            using var ms = new MemoryStream();
+                            file.CopyTo(ms);
+                            using var ms2 = new MemoryStream();
+                            _imageEditor.SquareCrop(ms.ToArray(), ms2);
+
+                            using var stream = System.IO.File.Create(cropPath);
+
+                            var cropped = ms2.ToArray();
+                            stream.Write(cropped, 0, cropped.Length);
 
                             _logger.LogInformation("{FileName} saved at {Path}",
                                 trustedFileNameForDisplay, path);

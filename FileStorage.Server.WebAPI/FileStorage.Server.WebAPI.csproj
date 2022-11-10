@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileStorage.Data.MongoDb\FileStorage.Data.MongoDb.csproj" />
+    <ProjectReference Include="..\FileStorage.Helpers\FileStorage.Helpers.csproj" />
     <ProjectReference Include="..\FileStorage\FileStorage.csproj" />
   </ItemGroup>
 
