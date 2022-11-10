@@ -87,20 +87,8 @@ namespace FileStorage.Server.WebAPI.Controllers
                             await using FileStream fs = new(path, FileMode.Create);
                             await file.CopyToAsync(fs);
 
-                            var cropFileName = Path.GetRandomFileName();
-                            var cropPath = Path.Combine(_env.ContentRootPath,
-                                _env.EnvironmentName, "unsafe_uploads",
-                                cropFileName);
-
-                            using var ms = new MemoryStream();
-                            file.CopyTo(ms);
-                            using var ms2 = new MemoryStream();
-                            _imageEditor.SquareCrop(ms.ToArray(), ms2);
-
-                            using var stream = System.IO.File.Create(cropPath);
-
-                            var cropped = ms2.ToArray();
-                            stream.Write(cropped, 0, cropped.Length);
+                            CropAndSave(file);
+                            ResizeAndSave(file);
 
                             _logger.LogInformation("{FileName} saved at {Path}",
                                 trustedFileNameForDisplay, path);
@@ -129,6 +117,42 @@ namespace FileStorage.Server.WebAPI.Controllers
             }
 
             return new CreatedResult(resourcePath, uploadResults);
+        }
+
+        private void CropAndSave(IFormFile file)
+        {
+            var cropFileName = Path.GetRandomFileName();
+            var cropPath = Path.Combine(_env.ContentRootPath,
+                _env.EnvironmentName, "unsafe_uploads",
+                cropFileName);
+
+            using var ms = new MemoryStream();
+            file.CopyTo(ms);
+            using var ms2 = new MemoryStream();
+            _imageEditor.SquareCrop(ms.ToArray(), ms2);
+
+            using var stream = System.IO.File.Create(cropPath);
+
+            var cropped = ms2.ToArray();
+            stream.Write(cropped, 0, cropped.Length);
+        }
+
+        private void ResizeAndSave(IFormFile file)
+        {
+            var cropFileName = Path.GetRandomFileName();
+            var cropPath = Path.Combine(_env.ContentRootPath,
+                _env.EnvironmentName, "unsafe_uploads",
+                cropFileName);
+
+            using var ms = new MemoryStream();
+            file.CopyTo(ms);
+            using var ms2 = new MemoryStream();
+            _imageEditor.Resize(ms.ToArray(), ms2);
+
+            using var stream = System.IO.File.Create(cropPath);
+
+            var cropped = ms2.ToArray();
+            stream.Write(cropped, 0, cropped.Length);
         }
 
         // PUT api/<ImagesController>/5
