@@ -1,7 +1,10 @@
+using Athn.Helpers.MimeType;
 using FileStorage;
 using FileStorage.Data.MongoDb;
+using FileStorage.Helpers;
 using FileStorage.Helpers.Images;
 using FileStorage.Server.WebAPI;
+using FileStorage.Services;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +21,14 @@ builder.Services.AddSingleton<IDatabaseSettings>(sp =>
 // TODO Почему синглтон?
 builder.Services.AddSingleton<IFileRepository, FileRepository>();
 
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+
 builder.Services.AddScoped<ImageEditor>();
+builder.Services.AddScoped<HashHelper>();
+builder.Services.AddScoped<MimeTypeChecker>();
+
+builder.Services.AddScoped<IImageService, ImageService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

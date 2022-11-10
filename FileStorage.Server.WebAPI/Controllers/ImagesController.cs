@@ -13,25 +13,31 @@ namespace FileStorage.Server.WebAPI.Controllers
     {
         private readonly IWebHostEnvironment _env;
         private readonly IFileRepository _fileRepository;
+        private readonly IImageRepository _imageRepository;
         private readonly ImageEditor _imageEditor;
+        private readonly IImageService _imageService;
         private readonly ILogger<FilesController> _logger;
 
         public ImagesController(IFileRepository fileRepository,
+            IImageRepository imageRepository,
             ImageEditor imageEditor,
             IWebHostEnvironment env,
+            IImageService imageService,
             ILogger<FilesController> logger)
         {
             _fileRepository = fileRepository;
+            _imageRepository = imageRepository;
             _imageEditor = imageEditor;
             _env = env;
             _logger = logger;
+            _imageService = imageService;
         }
 
         // GET: api/<ImagesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<ImageModel> Get()
         {
-            return new string[] { "value1", "value2" };
+            return _imageService.GetImages();
         }
 
         // GET api/<ImagesController>/5
@@ -46,7 +52,7 @@ namespace FileStorage.Server.WebAPI.Controllers
         public async Task<ActionResult<IList<UploadResultModel>>> Post([FromForm] IEnumerable<IFormFile> files)
         {
             var maxAllowedFiles = 3;
-            long maxFileSize = 1024 * 200;
+            long maxFileSize = 1024 * 2000;
             var filesProcessed = 0;
             var resourcePath = new Uri($"{Request.Scheme}://{Request.Host}/");
             List<UploadResultModel> uploadResults = new();
@@ -86,7 +92,7 @@ namespace FileStorage.Server.WebAPI.Controllers
 
                             await using FileStream fs = new(path, FileMode.Create);
                             await file.CopyToAsync(fs);
-
+                            
                             CropAndSave(file);
                             ResizeAndSave(file);
 
@@ -94,6 +100,10 @@ namespace FileStorage.Server.WebAPI.Controllers
                                 trustedFileNameForDisplay, path);
                             uploadResult.Uploaded = true;
                             uploadResult.StoredFileName = trustedFileNameForFileStorage;
+
+                            using var ms = new MemoryStream();
+                            await file.CopyToAsync(ms);
+                            await _imageService.SaveImage(ms.ToArray());
                         }
                         catch (IOException ex)
                         {

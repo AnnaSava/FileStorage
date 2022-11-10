@@ -1,4 +1,5 @@
 ﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 using System;
@@ -27,9 +28,13 @@ namespace FileStorage.Helpers.Images
 
             //return smallFile.GetBytes();
 
-            var cropped = smallFile.Clone(ctx => ctx.Crop(100, 50));
+            var rect = new Rectangle(left_right, top_bottom, side, side);
 
-            cropped.Save(outStream, new PngEncoder());
+            var cropped = smallFile.Clone(ctx => ctx.Crop(rect));
+
+            // TODO учитывать формат картинки
+            //cropped.Save(outStream, new PngEncoder());
+            cropped.Save(outStream, new JpegEncoder());
         }
 
         public void Resize(byte[] content, Stream outStream)
@@ -49,7 +54,14 @@ namespace FileStorage.Helpers.Images
 
             var resized = smallFile.Clone(ctx => ctx.Resize(smallFile.Width / 2, smallFile.Height / 2));
 
-            resized.Save(outStream, new PngEncoder());
+            // TODO учитывать формат картинки
+            resized.Save(outStream, new JpegEncoder());
+        }
+
+        public (int, int) GetSize(byte[] content)
+        {
+            var img = Image.Load(content);
+            return (img.Width, img.Height);
         }
     }
 }

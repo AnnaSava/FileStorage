@@ -26,5 +26,15 @@ namespace Athn.Helpers.MimeType
             }
             return "undefined";
         }
+
+        public string GetExtention(string mimeType)
+        {
+            if (string.IsNullOrEmpty(mimeType) || mimeType == "undefined") return null;
+
+            var extFromMime = mimeType.Split(',');
+            if (extFromMime.Length == 0) return null;
+
+            return extFromMime[0];
+        }
     }
 }

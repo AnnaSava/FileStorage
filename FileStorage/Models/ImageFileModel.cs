@@ -1,16 +1,13 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileStorage.Data.MongoDb.Documents
+namespace FileStorage.Models
 {
-    public class ImageFile
+    public class ImageFileModel
     {
-        [BsonRepresentation(BsonType.ObjectId)]
         public string FileId { get; set; }
 
         public string Type { get; set; } // Web, FullSize, Thumb etc.

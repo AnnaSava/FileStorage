@@ -1,13 +1,14 @@
 ﻿@page "/fetchdata"
+@using FileStorage.Models
 @inject HttpClient Http
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Image gallery</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Image gallery</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (images == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -16,20 +17,16 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Id</th>
+                <th>Preview</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var image in images)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@image.Id</td>
+                    <td><img src="https://localhost:7060/files/@image.PreviewId" style="width:150px;height:150px"/></td>
                 </tr>
             }
         </tbody>
@@ -37,21 +34,10 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private ImageModel[]? images;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
-
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        images = await Http.GetFromJsonAsync<ImageModel[]>("images");
     }
 }
