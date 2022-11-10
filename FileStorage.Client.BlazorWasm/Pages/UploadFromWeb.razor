@@ -1,0 +1,109 @@
+﻿@page "/upload-from-web"
+@using System.Linq
+@using System.Net.Http.Headers
+@using FileStorage.Models
+@using Microsoft.Extensions.Logging
+@using System.Net
+@inject HttpClient Http
+@inject ILogger<UploadImage> Logger
+
+<h1>Upload Images</h1>
+
+<p>
+    <label>
+        Upload up to @maxAllowedFiles files:
+        <input class="form-control" @bind="@fileUri"/>
+        <button @onclick="() => OnInputFileChange()">Upload</button>
+    </label>
+</p>
+
+@if (files.Count > 0)
+{
+    <div class="card">
+        <div class="card-body">
+            <ul>
+                @foreach (var file in files)
+                {
+                    <li>
+                        File: @file.Name
+                        <br>
+                        @if (FileUpload(uploadResults, file.Name, Logger,
+                           out var result))
+                        {
+                            <span>
+                                Stored File Name: @result.StoredFileName
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                There was an error uploading the file
+                                (Error: @result.ErrorCode).
+                            </span>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    private string fileUri;
+    private List<File> files = new();
+    private List<UploadResultModel> uploadResults = new();
+    private int maxAllowedFiles = 3;
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    private async Task OnInputFileChange()
+    {
+        var inputFiles = new List<string> { fileUri };
+        var dwlClient = new HttpClient();
+
+        shouldRender = false;
+        long maxFileSize = 1024 * 2000;
+        var upload = false;
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("/downloads", new UploadUriModel { FileUri = fileUri } );
+
+            var newUploadResults = await response.Content
+                .ReadFromJsonAsync<IList<UploadResultModel>>();
+
+            if (newUploadResults is not null)
+            {
+                uploadResults = uploadResults.Concat(newUploadResults).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogInformation(
+                    "Files not uploaded: {0}",
+                    ex.Message);
+        }
+
+        shouldRender = true;
+    }
+
+    private static bool FileUpload(IList<UploadResultModel> uploadResults,
+        string? fileName, ILogger<UploadImage> logger, out UploadResultModel result)
+    {
+        result = uploadResults.SingleOrDefault(f => f.FileName == fileName) ?? new();
+
+        if (!result.Uploaded)
+        {
+            logger.LogInformation("{FileName} not uploaded (Err: 5)", fileName);
+            result.ErrorCode = 5;
+        }
+
+        return result.Uploaded;
+    }
+
+    private class File
+    {
+        public string? Name { get; set; }
+    }
+}
