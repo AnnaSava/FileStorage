@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Client.WebApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Client.BlazorWasm", "FileStorage.Client.BlazorWasm\FileStorage.Client.BlazorWasm.csproj", "{A608FCF4-9105-44C8-BE9E-7A04963AAB38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Server.MinimalWebAPI", "FileStorage.Server.MinimalWebAPI\FileStorage.Server.MinimalWebAPI.csproj", "{7668A5C7-29B6-45EB-BC28-A428D44562DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{A608FCF4-9105-44C8-BE9E-7A04963AAB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A608FCF4-9105-44C8-BE9E-7A04963AAB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A608FCF4-9105-44C8-BE9E-7A04963AAB38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
