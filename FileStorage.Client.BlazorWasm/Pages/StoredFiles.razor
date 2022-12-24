@@ -1,0 +1,41 @@
+﻿@page "/storedfiles"
+@using FileStorage.Models
+@inject HttpClient Http
+
+<PageTitle>Image gallery</PageTitle>
+
+<h1>Stored files collection</h1>
+
+@if (images == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Preview</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var image in images)
+            {
+                <tr>
+                    <td>@image</td>
+                    <td><img src="https://localhost:7060/files/@image" style="width:150px;"/></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private string[]? images;
+
+    protected override async Task OnInitializedAsync()
+    {
+        images = await Http.GetFromJsonAsync<string[]>("files?page=1&count=20");
+    }
+}

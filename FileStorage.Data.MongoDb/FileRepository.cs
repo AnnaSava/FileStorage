@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Driver.Linq;
 
 namespace FileStorage.Data.MongoDb
 {
@@ -65,6 +66,51 @@ namespace FileStorage.Data.MongoDb
                 Sha1 = m.Sha1,
                 Size = m.Size
             }).FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<string>> GetStoredFileIds(int page, int count = 20)
+        {
+            var topLevelProjection = Builders<StoredFile>.Projection
+                //.Include(u => u.Id)
+                .Exclude(m => m.Content)
+                .Exclude(m => m.Md5)
+                .Exclude(m => m.Sha1);
+
+            var filter = Builders<StoredFile>.Filter.Eq(x => x.IsDeleted, false);
+
+            try
+            {
+                //var t = StoredFiles.CountDocuments(filter);
+
+                //var aggregateFluent = await StoredFiles.Aggregate()
+                //    .Match(filter)
+                //    .Project(m => new StoredFile { Id = m.Id })
+                //    .SortBy(m => m.Id)
+                //    .Skip((page - 1) * count)
+                //    .Limit(count)
+                //    .ToListAsync();
+
+                var linqTopLevelResults = await StoredFiles
+                    .AsQueryable()
+                    .Select(u => new { u.Id })
+                    //.OrderBy(u => u.Id)
+                    .Skip((page - 1) * count)
+                    .Take(count)
+                    .ToListAsync();
+
+                //var found = await StoredFiles.Find(filter)
+                //    .Project(topLevelProjection)
+                //    .SortBy(m => m.Id)
+                //    .Skip((page - 1) * count)
+                //    .Limit(count)
+                //    .ToListAsync();
+
+                return linqTopLevelResults.Select(m => m.Id.ToString());
+            }
+            catch (Exception ex)
+            {
+                return new List<string>();
+            }
         }
 
         public async Task UpdateManySha1Async(IEnumerable<StoredFileModel> files)

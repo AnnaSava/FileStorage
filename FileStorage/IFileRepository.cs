@@ -15,6 +15,8 @@ namespace FileStorage
 
         Task UpdateManySha1Async(IEnumerable<StoredFileModel> files);
 
+        Task<IEnumerable<string>> GetStoredFileIds(int page, int count = 20);
+
         Task<bool> FindAnyByMd5(string md5nash);
 
         Task<IEnumerable<StoredFileModel>> FindAllByMd5(string md5hash);

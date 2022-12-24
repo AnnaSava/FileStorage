@@ -25,9 +25,10 @@ namespace FileStorage.Server.WebAPI.Controllers
 
         // GET: api/<WebApiController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<string>> Get(int page, int count)
         {
-            return new string[] { "value1", "value2" };
+            var fileIds = await _fileRepository.GetStoredFileIds(page, count);
+            return fileIds;
         }
 
         // GET api/<WebApiController>/5
