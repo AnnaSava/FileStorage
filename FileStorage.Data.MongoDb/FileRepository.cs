@@ -70,6 +70,57 @@ namespace FileStorage.Data.MongoDb
 
         public async Task<IEnumerable<string>> GetStoredFileIds(int page, int count = 20)
         {
+            var result = await GetStoredFileIds0(page, count);
+            return result;
+        }
+
+        private async Task<IEnumerable<string>> GetStoredFileIds1(int page, int count = 20)
+        {
+            var countFacet = AggregateFacet.Create("count",
+               PipelineDefinition<StoredFile, AggregateCountResult>.Create(new[]
+               {
+                    PipelineStageDefinitionBuilder.Count<StoredFile>()
+               }));
+
+            var dataFacet = AggregateFacet.Create("data",
+                PipelineDefinition<StoredFile, StoredFile>.Create(new[]
+                {
+                PipelineStageDefinitionBuilder.Sort(Builders<StoredFile>.Sort.Ascending(x => x.Id)),
+                PipelineStageDefinitionBuilder.Skip<StoredFile>((page - 1) * count),
+                PipelineStageDefinitionBuilder.Limit<StoredFile>(count),
+                }));
+
+            var filter = Builders<StoredFile>.Filter.Empty;
+
+            var t = StoredFiles.Indexes.List().ToList();
+
+            foreach (var t0 in t)
+            {
+
+            }
+
+            var aggregation = await StoredFiles.Aggregate()
+                .Match(filter)
+                .Facet(countFacet, dataFacet)
+                .ToListAsync();
+
+            var _count = aggregation.First()
+                .Facets.First(x => x.Name == "count")
+                .Output<AggregateCountResult>()
+                ?.FirstOrDefault()
+                ?.Count ?? 0;
+
+            var totalPages = (int)_count / count;
+
+            var data = aggregation.First()
+                .Facets.First(x => x.Name == "data")
+                .Output<StoredFile>();
+
+            return data.Select(m => m.Id.ToString());
+        }
+
+        private async Task<IEnumerable<string>> GetStoredFileIds0(int page, int count = 20)
+        {
             var topLevelProjection = Builders<StoredFile>.Projection
                 //.Include(u => u.Id)
                 .Exclude(m => m.Content)
@@ -90,13 +141,20 @@ namespace FileStorage.Data.MongoDb
                 //    .Limit(count)
                 //    .ToListAsync();
 
-                var linqTopLevelResults = await StoredFiles
-                    .AsQueryable()
-                    .Select(u => new { u.Id })
-                    //.OrderBy(u => u.Id)
+                var query = StoredFiles
+                    .AsQueryable()                    
+                    .OrderByDescending(u => u.Id)
                     .Skip((page - 1) * count)
                     .Take(count)
-                    .ToListAsync();
+                    .Select(u => new { u.Id });
+
+                var q = query.GetExecutionModel();
+
+                var linqTopLevelResults = await query.ToListAsync();
+
+                // https://stackoverflow.com/questions/29682371/how-is-an-iasynccursor-used-for-iteration-with-the-mongodb-c-sharp-driver
+                //var found = await StoredFiles.FindAsync(filter);
+                //found.ForEachAsync
 
                 //var found = await StoredFiles.Find(filter)
                 //    .Project(topLevelProjection)
