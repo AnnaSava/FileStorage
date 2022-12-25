@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Client.WebApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Client.BlazorWasm", "FileStorage.Client.BlazorWasm\FileStorage.Client.BlazorWasm.csproj", "{A608FCF4-9105-44C8-BE9E-7A04963AAB38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Server.MinimalWebAPI", "FileStorage.Server.MinimalWebAPI\FileStorage.Server.MinimalWebAPI.csproj", "{7668A5C7-29B6-45EB-BC28-A428D44562DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Server.MinimalWebAPI", "FileStorage.Server.MinimalWebAPI\FileStorage.Server.MinimalWebAPI.csproj", "{7668A5C7-29B6-45EB-BC28-A428D44562DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Socket.Server", "FileStorage.Socket.Server\FileStorage.Socket.Server.csproj", "{44C623E3-6663-4716-A8E5-7323CF3E7752}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Socket.Client", "FileStorage.Socket.Client\FileStorage.Socket.Client.csproj", "{AD5F7E57-DD23-415C-860C-68589270A007}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD5F7E57-DD23-415C-860C-68589270A007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD5F7E57-DD23-415C-860C-68589270A007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD5F7E57-DD23-415C-860C-68589270A007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD5F7E57-DD23-415C-860C-68589270A007}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
