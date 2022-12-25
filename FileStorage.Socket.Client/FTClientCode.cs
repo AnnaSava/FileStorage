@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-https://www.codeproject.com/Articles/24017/File-Transfer-using-Socket-Application-in-C-NET-2
+//https://www.codeproject.com/Articles/24017/File-Transfer-using-Socket-Application-in-C-NET-2
 class FTClientCode
 {
     public static string curMsg = "Idle";

@@ -27,6 +27,8 @@ builder.Services.AddScoped<ImageEditor>();
 builder.Services.AddScoped<HashHelper>();
 builder.Services.AddScoped<MimeTypeChecker>();
 
+builder.Services.AddScoped<FileTransferService>();
+
 builder.Services.AddScoped<IImageService, ImageService>();
 
 

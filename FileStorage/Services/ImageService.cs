@@ -17,18 +17,21 @@ namespace FileStorage.Services
         private readonly MimeTypeChecker _mimeTypeChecker;
         private readonly HashHelper _hashHelper;
         private readonly ImageEditor _imageEditor;
+        private readonly FileTransferService _fileTransferService;
 
         public ImageService(IFileRepository fileRepository,
             IImageRepository imageRepository,
             MimeTypeChecker mimeTypeChecker,
             HashHelper hashHelper,
-            ImageEditor imageEditor)
+            ImageEditor imageEditor,
+            FileTransferService fileTransferService)
         {
             _fileRepository = fileRepository;
             _imageRepository = imageRepository;
             _mimeTypeChecker = mimeTypeChecker;
             _hashHelper = hashHelper;
             _imageEditor = imageEditor;
+            _fileTransferService = fileTransferService;
         }
 
         //TODO async???
@@ -146,6 +149,8 @@ namespace FileStorage.Services
                 return duplicateFileModel;
 
             var fileId = await _fileRepository.UploadFileAsync(fileModel);
+
+            _fileTransferService.Send(fileModel.Content);
 
             return await _fileRepository.DownLoadFileAsync(fileId);
         }
