@@ -48,6 +48,13 @@ class FTServerCode
                 save it by using binary writer. */
                 curMsg = "Saving file...";
                 bWrite.Close();
+
+                // отправляем ответ
+                string message = "файл " + fileName + " сохранен";
+                var data = Encoding.Unicode.GetBytes(message);
+                clientSock.Send(data);
+
+                clientSock.Shutdown(SocketShutdown.Both);
                 clientSock.Close();
                 /* Close binary writer and client socket */
                 curMsg = "Received & Saved file; Server Stopped.";

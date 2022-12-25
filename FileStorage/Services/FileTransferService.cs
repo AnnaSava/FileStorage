@@ -21,6 +21,21 @@ namespace FileStorage.Services
 
             clientSock.Send(fileContent);
 
+            // получаем ответ
+            var data = new byte[256]; // буфер для ответа
+            StringBuilder builder = new StringBuilder();
+            int bytes = 0; // количество полученных байт
+
+            do
+            {
+                bytes = clientSock.Receive(data, data.Length, 0);
+                builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+            }
+            while (clientSock.Available > 0);
+            Console.WriteLine("ответ сервера: " + builder.ToString());
+
+            // закрываем сокет
+            clientSock.Shutdown(SocketShutdown.Both);
             clientSock.Close();
 
         }
