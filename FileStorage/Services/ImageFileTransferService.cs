@@ -10,25 +10,28 @@ using System.Threading.Tasks;
 
 namespace FileStorage.Services
 {
-    public class ImageService : IImageService
+    public class ImageFileTransferService : IImageService
     {
+        private readonly IFileRepository _fileRepository;
         private readonly IImageRepository _imageRepository;
         private readonly MimeTypeChecker _mimeTypeChecker;
         private readonly HashHelper _hashHelper;
         private readonly ImageEditor _imageEditor;
-        private readonly FileProcessingService _fileProcessingService;
+        private readonly FileTransferService _fileTransferService;
 
-        public ImageService(IImageRepository imageRepository,
+        public ImageFileTransferService(IFileRepository fileRepository,
+            IImageRepository imageRepository,
             MimeTypeChecker mimeTypeChecker,
             HashHelper hashHelper,
             ImageEditor imageEditor,
-            FileProcessingService fileProcessingService)
+            FileTransferService fileTransferService)
         {
+            _fileRepository = fileRepository;
             _imageRepository = imageRepository;
             _mimeTypeChecker = mimeTypeChecker;
             _hashHelper = hashHelper;
             _imageEditor = imageEditor;
-            _fileProcessingService = fileProcessingService;
+            _fileTransferService = fileTransferService;
         }
 
         //TODO async???
@@ -44,7 +47,7 @@ namespace FileStorage.Services
 
             var storedImageFiles = new Dictionary<string, StoredFileModel>();
 
-            var uploadedFileModel = await _fileProcessingService.UploadFilePreventDuplicate(fileModel);
+            var uploadedFileModel = await SendFileToUpload(fileModel);
             storedImageFiles.Add("Original", uploadedFileModel);
 
             var resizedFileModel = await ResizeAndSave(uploadedFileModel);
@@ -85,7 +88,7 @@ namespace FileStorage.Services
             var content = ms.ToArray();
             var resizedFileModel = MakeFileModelToUpload(content);
 
-            var saved = await _fileProcessingService.UploadFilePreventDuplicate(resizedFileModel);
+            var saved = await SendFileToUpload(resizedFileModel);
             return saved;
         }
 
@@ -97,7 +100,7 @@ namespace FileStorage.Services
             var content = ms.ToArray();
             var croppedFileModel = MakeFileModelToUpload(content);
 
-            var saved = await _fileProcessingService.UploadFilePreventDuplicate(croppedFileModel);
+            var saved = await SendFileToUpload(croppedFileModel);
             return saved;
         }
 
@@ -116,6 +119,15 @@ namespace FileStorage.Services
             };
 
             return model;
+        }
+
+        private async Task<StoredFileModel> SendFileToUpload(StoredFileModel fileModel)
+        {
+            var fileId = await _fileRepository.UploadFileAsync(fileModel);
+
+            _fileTransferService.Send(fileModel.Content);
+
+            return await _fileRepository.DownLoadFileAsync(fileId);
         }
     }
 }

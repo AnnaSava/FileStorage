@@ -5,6 +5,7 @@
 @using Microsoft.Extensions.Logging
 @inject HttpClient Http
 @inject ILogger<UploadImage> Logger
+@inject IHttpClientFactory _httpClientFactory
 
 <h1>Upload Images</h1>
 
@@ -105,7 +106,8 @@
         {
             try
             {
-                var response = await Http.PostAsync("/images", content);
+                 var httpClient = _httpClientFactory.CreateClient("Images");
+                var response = await httpClient.PostAsync("/images", content);
 
                 var newUploadResults = await response.Content
                     .ReadFromJsonAsync<IList<UploadResultModel>>();

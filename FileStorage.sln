@@ -11,17 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Helpers", "File
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Tools.FilesToDb", "FileStorage.Tools.FilesToDb\FileStorage.Tools.FilesToDb.csproj", "{B7E2A93B-BBBF-405A-ADEA-057E1CC47ED8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Server.WebAPI", "FileStorage.Server.WebAPI\FileStorage.Server.WebAPI.csproj", "{1D207E4D-FE3B-4613-A8DA-5864D35A7798}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Client.WebApp", "FileStorage.Client.WebApp\FileStorage.Client.WebApp.csproj", "{7E4236FF-5D36-4676-A2D0-7D4F7805125C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Client.BlazorWasm", "FileStorage.Client.BlazorWasm\FileStorage.Client.BlazorWasm.csproj", "{A608FCF4-9105-44C8-BE9E-7A04963AAB38}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Server.MinimalWebAPI", "FileStorage.Server.MinimalWebAPI\FileStorage.Server.MinimalWebAPI.csproj", "{7668A5C7-29B6-45EB-BC28-A428D44562DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.FileServer.DownloadAPI", "FileStorage.FileServer.DownloadAPI\FileStorage.FileServer.DownloadAPI.csproj", "{60A5D48A-FD40-4664-B8B0-367E3BF3E7E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Socket.Server", "FileStorage.Socket.Server\FileStorage.Socket.Server.csproj", "{44C623E3-6663-4716-A8E5-7323CF3E7752}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.FileServer.UploadViaSocket", "FileStorage.FileServer.UploadViaSocket\FileStorage.FileServer.UploadViaSocket.csproj", "{80386A16-8A27-4A66-8498-1882050948E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.Socket.Client", "FileStorage.Socket.Client\FileStorage.Socket.Client.csproj", "{AD5F7E57-DD23-415C-860C-68589270A007}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.FileServer.WebAPI", "FileStorage.FileServer.WebAPI\FileStorage.FileServer.WebAPI.csproj", "{14AEB07C-F921-463C-A1AF-AE75306D727D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.ImageServer.WebAPI", "FileStorage.ImageServer.WebAPI\FileStorage.ImageServer.WebAPI.csproj", "{370A654F-6CF7-476F-9675-13DCED7C8AE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,30 +43,26 @@ Global
 		{B7E2A93B-BBBF-405A-ADEA-057E1CC47ED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7E2A93B-BBBF-405A-ADEA-057E1CC47ED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7E2A93B-BBBF-405A-ADEA-057E1CC47ED8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D207E4D-FE3B-4613-A8DA-5864D35A7798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D207E4D-FE3B-4613-A8DA-5864D35A7798}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D207E4D-FE3B-4613-A8DA-5864D35A7798}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D207E4D-FE3B-4613-A8DA-5864D35A7798}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7E4236FF-5D36-4676-A2D0-7D4F7805125C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E4236FF-5D36-4676-A2D0-7D4F7805125C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E4236FF-5D36-4676-A2D0-7D4F7805125C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E4236FF-5D36-4676-A2D0-7D4F7805125C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A608FCF4-9105-44C8-BE9E-7A04963AAB38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A608FCF4-9105-44C8-BE9E-7A04963AAB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A608FCF4-9105-44C8-BE9E-7A04963AAB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A608FCF4-9105-44C8-BE9E-7A04963AAB38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7668A5C7-29B6-45EB-BC28-A428D44562DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44C623E3-6663-4716-A8E5-7323CF3E7752}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD5F7E57-DD23-415C-860C-68589270A007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD5F7E57-DD23-415C-860C-68589270A007}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD5F7E57-DD23-415C-860C-68589270A007}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD5F7E57-DD23-415C-860C-68589270A007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A5D48A-FD40-4664-B8B0-367E3BF3E7E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A5D48A-FD40-4664-B8B0-367E3BF3E7E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A5D48A-FD40-4664-B8B0-367E3BF3E7E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A5D48A-FD40-4664-B8B0-367E3BF3E7E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80386A16-8A27-4A66-8498-1882050948E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80386A16-8A27-4A66-8498-1882050948E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80386A16-8A27-4A66-8498-1882050948E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80386A16-8A27-4A66-8498-1882050948E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14AEB07C-F921-463C-A1AF-AE75306D727D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14AEB07C-F921-463C-A1AF-AE75306D727D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14AEB07C-F921-463C-A1AF-AE75306D727D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14AEB07C-F921-463C-A1AF-AE75306D727D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{370A654F-6CF7-476F-9675-13DCED7C8AE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{370A654F-6CF7-476F-9675-13DCED7C8AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{370A654F-6CF7-476F-9675-13DCED7C8AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{370A654F-6CF7-476F-9675-13DCED7C8AE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
