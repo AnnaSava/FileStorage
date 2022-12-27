@@ -1,16 +1,18 @@
-﻿using System;
+﻿using FileStorage.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FileStorage.Services
 {
     public class FileTransferService
     {
-        public void Send(byte[] fileContent)
+        public StoredFileModel Send(byte[] fileContent)
         {
             IPAddress[] ipAddress = Dns.GetHostAddresses("localhost");
             IPEndPoint ipEnd = new IPEndPoint(ipAddress[0], 5656);
@@ -32,12 +34,15 @@ namespace FileStorage.Services
                 builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
             }
             while (clientSock.Available > 0);
-            Console.WriteLine("ответ сервера: " + builder.ToString());
+           // Console.WriteLine("ответ сервера: " + builder.ToString());
+
+            var model = JsonSerializer.Deserialize<StoredFileModel>(builder.ToString());
 
             // закрываем сокет
             clientSock.Shutdown(SocketShutdown.Both);
             clientSock.Close();
 
+            return model;
         }
     }
 }

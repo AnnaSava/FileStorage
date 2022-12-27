@@ -12,24 +12,16 @@ namespace FileStorage.Services
 {
     public class ImageFileTransferService : IImageService
     {
-        private readonly IFileRepository _fileRepository;
         private readonly IImageRepository _imageRepository;
-        private readonly MimeTypeChecker _mimeTypeChecker;
-        private readonly HashHelper _hashHelper;
         private readonly ImageEditor _imageEditor;
         private readonly FileTransferService _fileTransferService;
 
-        public ImageFileTransferService(IFileRepository fileRepository,
+        public ImageFileTransferService(
             IImageRepository imageRepository,
-            MimeTypeChecker mimeTypeChecker,
-            HashHelper hashHelper,
             ImageEditor imageEditor,
             FileTransferService fileTransferService)
         {
-            _fileRepository = fileRepository;
             _imageRepository = imageRepository;
-            _mimeTypeChecker = mimeTypeChecker;
-            _hashHelper = hashHelper;
             _imageEditor = imageEditor;
             _fileTransferService = fileTransferService;
         }
@@ -43,11 +35,9 @@ namespace FileStorage.Services
 
         public async Task SaveImage(byte[] content)
         {
-            var fileModel = MakeFileModelToUpload(content);
-
             var storedImageFiles = new Dictionary<string, StoredFileModel>();
 
-            var uploadedFileModel = await SendFileToUpload(fileModel);
+            var uploadedFileModel = await SendFileToUpload(content);
             storedImageFiles.Add("Original", uploadedFileModel);
 
             var resizedFileModel = await ResizeAndSave(uploadedFileModel);
@@ -86,9 +76,8 @@ namespace FileStorage.Services
             _imageEditor.Resize(fileModel.Content, ms);
 
             var content = ms.ToArray();
-            var resizedFileModel = MakeFileModelToUpload(content);
 
-            var saved = await SendFileToUpload(resizedFileModel);
+            var saved = await SendFileToUpload(content);
             return saved;
         }
 
@@ -98,36 +87,16 @@ namespace FileStorage.Services
             _imageEditor.SquareCrop(fileModel.Content, ms);
 
             var content = ms.ToArray();
-            var croppedFileModel = MakeFileModelToUpload(content);
 
-            var saved = await SendFileToUpload(croppedFileModel);
+            var saved = await SendFileToUpload(content);
             return saved;
         }
 
-        private StoredFileModel MakeFileModelToUpload(byte[] content)
+        private async Task<StoredFileModel> SendFileToUpload(byte[] content)
         {
-            var mimeType = _mimeTypeChecker.GetMimeType(content);
-
-            var model = new StoredFileModel
-            {
-                Content = content,
-                MimeType = mimeType,
-                Md5 = _hashHelper.GetMd5Hash(content),
-                Sha1 = _hashHelper.GetSha1Hash(content),
-                Ext = _mimeTypeChecker.GetExtention(mimeType),
-                Size = content.Length
-            };
+            var model = _fileTransferService.Send(content);
 
             return model;
-        }
-
-        private async Task<StoredFileModel> SendFileToUpload(StoredFileModel fileModel)
-        {
-            var fileId = await _fileRepository.UploadFileAsync(fileModel);
-
-            _fileTransferService.Send(fileModel.Content);
-
-            return await _fileRepository.DownLoadFileAsync(fileId);
         }
     }
 }

@@ -4,6 +4,7 @@ using FileStorage.Services;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 
 //https://www.codeproject.com/Articles/24017/File-Transfer-using-Socket-Application-in-C-NET-2
 class FTServerCode
@@ -49,12 +50,7 @@ class FTServerCode
                 string fileName = "test" + DateTime.Now.Ticks;
                 /* Read file name */
 
-                var model = new StoredFileModel
-                {
-                    Content = clientData.Take(receivedBytesLen).ToArray(),
-                };
-
-                await _fileProcessingService.UploadFilePreventDuplicate(model);
+               var resultModel = await _fileProcessingService.UploadFilePreventDuplicate(clientData.Take(receivedBytesLen).ToArray());
 
                 BinaryWriter bWrite = new BinaryWriter(File.Open(fileName, FileMode.CreateNew));
                 /* Make a Binary stream writer to saving the receiving data from client. */
@@ -66,7 +62,10 @@ class FTServerCode
 
                 // отправляем ответ
                 string message = "файл " + fileName + " сохранен";
-                var data = Encoding.Unicode.GetBytes(message);
+
+                var msg = JsonSerializer.Serialize(resultModel); 
+
+                var data = Encoding.Unicode.GetBytes(msg);
                 clientSock.Send(data);
 
                 clientSock.Shutdown(SocketShutdown.Both);

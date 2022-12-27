@@ -1,7 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using Athn.Helpers.MimeType;
 using FileStorage;
 using FileStorage.Data.MongoDb;
 using FileStorage.FileServer.UploadViaSocket;
+using FileStorage.Helpers;
 using FileStorage.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,8 @@ services.Configure<DatabaseSettings>(
 services.AddSingleton<IDatabaseSettings>(sp =>
     sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
+services.AddSingleton<HashHelper>();
+services.AddSingleton<MimeTypeChecker>();
 services.AddSingleton<IFileRepository, FileRepository>();
 services.AddSingleton<FileProcessingService>();
 

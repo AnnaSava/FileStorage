@@ -13,20 +13,15 @@ namespace FileStorage.Services
     public class ImageService : IImageService
     {
         private readonly IImageRepository _imageRepository;
-        private readonly MimeTypeChecker _mimeTypeChecker;
-        private readonly HashHelper _hashHelper;
         private readonly ImageEditor _imageEditor;
         private readonly FileProcessingService _fileProcessingService;
 
         public ImageService(IImageRepository imageRepository,
-            MimeTypeChecker mimeTypeChecker,
-            HashHelper hashHelper,
             ImageEditor imageEditor,
             FileProcessingService fileProcessingService)
         {
             _imageRepository = imageRepository;
-            _mimeTypeChecker = mimeTypeChecker;
-            _hashHelper = hashHelper;
+            
             _imageEditor = imageEditor;
             _fileProcessingService = fileProcessingService;
         }
@@ -40,11 +35,9 @@ namespace FileStorage.Services
 
         public async Task SaveImage(byte[] content)
         {
-            var fileModel = MakeFileModelToUpload(content);
-
             var storedImageFiles = new Dictionary<string, StoredFileModel>();
 
-            var uploadedFileModel = await _fileProcessingService.UploadFilePreventDuplicate(fileModel);
+            var uploadedFileModel = await _fileProcessingService.UploadFilePreventDuplicate(content);
             storedImageFiles.Add("Original", uploadedFileModel);
 
             var resizedFileModel = await ResizeAndSave(uploadedFileModel);
@@ -83,9 +76,8 @@ namespace FileStorage.Services
             _imageEditor.Resize(fileModel.Content, ms);
 
             var content = ms.ToArray();
-            var resizedFileModel = MakeFileModelToUpload(content);
 
-            var saved = await _fileProcessingService.UploadFilePreventDuplicate(resizedFileModel);
+            var saved = await _fileProcessingService.UploadFilePreventDuplicate(content);
             return saved;
         }
 
@@ -95,27 +87,11 @@ namespace FileStorage.Services
             _imageEditor.SquareCrop(fileModel.Content, ms);
 
             var content = ms.ToArray();
-            var croppedFileModel = MakeFileModelToUpload(content);
 
-            var saved = await _fileProcessingService.UploadFilePreventDuplicate(croppedFileModel);
+            var saved = await _fileProcessingService.UploadFilePreventDuplicate(content);
             return saved;
         }
 
-        private StoredFileModel MakeFileModelToUpload(byte[] content)
-        {
-            var mimeType = _mimeTypeChecker.GetMimeType(content);
-
-            var model = new StoredFileModel
-            {
-                Content = content,
-                MimeType = mimeType,
-                Md5 = _hashHelper.GetMd5Hash(content),
-                Sha1 = _hashHelper.GetSha1Hash(content),
-                Ext = _mimeTypeChecker.GetExtention(mimeType),
-                Size = content.Length
-            };
-
-            return model;
-        }
+        
     }
 }
