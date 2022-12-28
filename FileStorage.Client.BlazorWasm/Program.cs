@@ -16,4 +16,10 @@ builder.Services.AddHttpClient("Images", client =>
     client.BaseAddress = new Uri("https://localhost:7060");
 });
 
+builder.Services.AddHttpClient("FilesWebAPI", client =>
+{
+    client.DefaultRequestHeaders.AcceptLanguage.Clear();
+    client.BaseAddress = new Uri("https://localhost:7268");
+});
+
 await builder.Build().RunAsync();

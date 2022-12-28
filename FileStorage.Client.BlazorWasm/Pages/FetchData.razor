@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using FileStorage.Models
 @inject HttpClient Http
+@inject IHttpClientFactory _httpClientFactory
 
 <PageTitle>Image gallery</PageTitle>
 
@@ -38,6 +39,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        images = await Http.GetFromJsonAsync<ImageModel[]>("images");
+        var httpClient = _httpClientFactory.CreateClient("Images");
+        images = await httpClient.GetFromJsonAsync<ImageModel[]>("images");
     }
 }

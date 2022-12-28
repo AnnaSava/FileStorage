@@ -1,5 +1,6 @@
 using FileStorage;
 using FileStorage.Data.MongoDb;
+using FileStorage.FileServer.WebAPI;
 using FileStorage.FileService.WebAPI;
 using Microsoft.Extensions.Options;
 
@@ -13,6 +14,11 @@ builder.Services.Configure<DatabaseSettings>(
 
 builder.Services.AddSingleton<IDatabaseSettings>(sp =>
     sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+
+builder.Services.Configure<FileServerSettings>(
+   builder.Configuration.GetSection(nameof(FileServerSettings)));
+
+builder.Services.AddSingleton<FileServerSettings>(sp => sp.GetRequiredService<IOptions<FileServerSettings>>().Value);
 
 // TODO Почему синглтон?
 builder.Services.AddSingleton<IFileRepository, FileRepository>();
@@ -43,6 +49,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors();
 
 app.UseAuthorization();
 

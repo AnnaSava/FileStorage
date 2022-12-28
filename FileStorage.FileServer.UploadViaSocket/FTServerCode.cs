@@ -1,82 +1,54 @@
-﻿//FILE TRANSFER USING C#.NET SOCKET - SERVER
-using FileStorage.Models;
+﻿using FileStorage.Models;
 using FileStorage.Services;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 
-//https://www.codeproject.com/Articles/24017/File-Transfer-using-Socket-Application-in-C-NET-2
 class FTServerCode
 {
-    IPEndPoint ipEnd;
-    Socket sock;
+    IPEndPoint ipEndPoint;
+    Socket socket;
+    FileServerSettings _settings;
 
     FileProcessingService _fileProcessingService;
 
-    public FTServerCode(FileProcessingService fileProcessingService)
+    public FTServerCode(FileProcessingService fileProcessingService, FileServerSettings settings)
     {
-        ipEnd = new IPEndPoint(IPAddress.Any, 5656);
-        //Make IP end point to accept any IP address with port no 5656.
-        sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        //Here creating new socket object with protocol type and transfer data type
-        sock.Bind(ipEnd);
-        //Bind end point with newly created socket.
+        ipEndPoint = new IPEndPoint(IPAddress.Any, settings.Port);
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        socket.Bind(ipEndPoint);
 
         _fileProcessingService = fileProcessingService;
+        _settings = settings;
     }
-    public static string receivedPath = "";
-    public static string curMsg = "Stopped";
+
     public async Task StartServer()
     {
         try
         {
             while (true)
             {
-                curMsg = "Starting...";
-                sock.Listen(100);
-                /* That socket object can handle maximum 100 client connection at a time & 
-                waiting for new client connection */
-                curMsg = "Running and waiting to receive file.";
-                Socket clientSock = sock.Accept();
-                /* When request comes from client that accept it and return 
-                new socket object for handle that client. */
-                byte[] clientData = new byte[1024 * 50000];
-                int receivedBytesLen = clientSock.Receive(clientData);
-                curMsg = "Receiving data...";
-                /* I've sent byte array data from client in that format like 
-                [file name length in byte][file name] [file data], so need to know 
-                first how long the file name is. */
-                string fileName = "test" + DateTime.Now.Ticks;
-                /* Read file name */
+                socket.Listen(_settings.ConnectionsCount);
+                var client = socket.Accept();
 
-               var resultModel = await _fileProcessingService.UploadFilePreventDuplicate(clientData.Take(receivedBytesLen).ToArray());
+                byte[] clientData = new byte[1024 * _settings.MaxFileSize];
+                int receivedBytes = client.Receive(clientData);
 
-                BinaryWriter bWrite = new BinaryWriter(File.Open(fileName, FileMode.CreateNew));
-                /* Make a Binary stream writer to saving the receiving data from client. */
-                bWrite.Write(clientData, 0, receivedBytesLen);
-                /* Read remain data (which is file content) and 
-                save it by using binary writer. */
-                curMsg = "Saving file...";
-                bWrite.Close();
-
-                // отправляем ответ
-                string message = "файл " + fileName + " сохранен";
+               var resultModel = await _fileProcessingService.UploadFilePreventDuplicate(clientData.Take(receivedBytes).ToArray());
 
                 var msg = JsonSerializer.Serialize(resultModel); 
 
                 var data = Encoding.Unicode.GetBytes(msg);
-                clientSock.Send(data);
+                client.Send(data);
 
-                clientSock.Shutdown(SocketShutdown.Both);
-                clientSock.Close();
-                /* Close binary writer and client socket */
-                curMsg = "Received & Saved file; Server Stopped.";
+                client.Shutdown(SocketShutdown.Both);
+                client.Close();
             }
         }
         catch (Exception ex)
         {
-            curMsg = "File Receiving error.";
+
         }
     }
 }

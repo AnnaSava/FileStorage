@@ -106,7 +106,7 @@
         {
             try
             {
-                 var httpClient = _httpClientFactory.CreateClient("Images");
+                var httpClient = _httpClientFactory.CreateClient("Images");
                 var response = await httpClient.PostAsync("/images", content);
 
                 var newUploadResults = await response.Content

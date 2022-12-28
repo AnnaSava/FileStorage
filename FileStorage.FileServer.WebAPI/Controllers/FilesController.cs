@@ -13,14 +13,17 @@ namespace FileStorage.Server.WebAPI.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IFileRepository _fileRepository;
         private readonly ILogger<FilesController> _logger;
+        private readonly FileServer.WebAPI.FileServerSettings _settings;
 
         public FilesController(IFileRepository fileRepository, 
-            IWebHostEnvironment env, 
+            IWebHostEnvironment env,
+            FileServer.WebAPI.FileServerSettings settings,
             ILogger<FilesController> logger)
         {
             _fileRepository = fileRepository;
             _env = env;
             _logger = logger;
+            _settings = settings;
         }
 
         // GET: api/<WebApiController>
@@ -28,7 +31,7 @@ namespace FileStorage.Server.WebAPI.Controllers
         public async Task<IEnumerable<string>> Get(int page, int count)
         {
             var fileIds = await _fileRepository.GetStoredFileIds(page, count);
-            return fileIds;
+            return fileIds.Select(m => string.Format(_settings.UriPattern, m));
         }
 
         // GET api/<WebApiController>/5
@@ -49,7 +52,7 @@ namespace FileStorage.Server.WebAPI.Controllers
         public async Task<ActionResult<IList<UploadResultModel>>> Post([FromForm] IEnumerable<IFormFile> files)
         {
             var maxAllowedFiles = 3;
-            long maxFileSize = 1024 * 15;
+            long maxFileSize = 1024 * 1500;
             var filesProcessed = 0;
             var resourcePath = new Uri($"{Request.Scheme}://{Request.Host}/");
             List<UploadResultModel> uploadResults = new();

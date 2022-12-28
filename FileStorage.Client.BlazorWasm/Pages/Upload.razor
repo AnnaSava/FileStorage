@@ -5,8 +5,11 @@
 @using Microsoft.Extensions.Logging
 @inject HttpClient Http
 @inject ILogger<Upload> Logger
+@inject IHttpClientFactory _httpClientFactory
 
 <h1>Upload Files</h1>
+
+<p>Загружает файлы напрямую на файловый сервер через http (POST-запрос на FileStorage.FileServer.WebAPI)</p>
 
 <p>
     <label>
@@ -57,7 +60,7 @@
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         shouldRender = false;
-        long maxFileSize = 1024 * 15;
+        long maxFileSize = 1024 * 1500;
         var upload = false;
 
         using var content = new MultipartFormDataContent();
@@ -105,7 +108,8 @@
         {
             try
             {
-                var response = await Http.PostAsync("/files", content);
+                var httpClient = _httpClientFactory.CreateClient("FilesWebAPI");
+                var response = await httpClient.PostAsync("/files", content);
 
                 var newUploadResults = await response.Content
                     .ReadFromJsonAsync<IList<UploadResultModel>>();

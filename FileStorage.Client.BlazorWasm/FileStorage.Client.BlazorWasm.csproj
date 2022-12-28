@@ -16,4 +16,8 @@
     <ProjectReference Include="..\FileStorage\FileStorage.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\FileWebAPI\" />
+  </ItemGroup>
+
 </Project>

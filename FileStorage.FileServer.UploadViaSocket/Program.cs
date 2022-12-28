@@ -4,6 +4,7 @@ using FileStorage;
 using FileStorage.Data.MongoDb;
 using FileStorage.FileServer.UploadViaSocket;
 using FileStorage.Helpers;
+using FileStorage.Models;
 using FileStorage.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,11 @@ services.Configure<DatabaseSettings>(
 services.AddSingleton<IDatabaseSettings>(sp =>
     sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
+services.Configure<FileServerSettings>(
+   config.GetSection(nameof(FileServerSettings)));
+
+services.AddSingleton<FileServerSettings>(sp => sp.GetRequiredService<IOptions<FileServerSettings>>().Value);
+
 services.AddSingleton<HashHelper>();
 services.AddSingleton<MimeTypeChecker>();
 services.AddSingleton<IFileRepository, FileRepository>();
@@ -27,7 +33,7 @@ services.AddSingleton<FileProcessingService>();
 
 ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-await new FTServerCode(serviceProvider.GetService<FileProcessingService>()).StartServer();
+await new FTServerCode(serviceProvider.GetService<FileProcessingService>(), serviceProvider.GetService<FileServerSettings>()).StartServer();
 
 IConfigurationRoot GetConfiguration()
 {
