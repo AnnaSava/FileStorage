@@ -15,5 +15,7 @@ namespace FileStorage.Models
         public int ConnectionsCount { get; set; }
 
         public int MaxFileSize { get; set; }
+
+        public string UriPattern { get; set; }
     }
 }

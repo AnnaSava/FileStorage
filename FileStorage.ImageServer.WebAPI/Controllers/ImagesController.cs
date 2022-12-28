@@ -35,9 +35,9 @@ namespace FileStorage.FileService.WebAPI.Controllers
 
         // GET: api/<ImagesController>
         [HttpGet]
-        public IEnumerable<ImageModel> Get()
+        public IEnumerable<ImageModel> Get(int page, int count)
         {
-            return _imageService.GetImages();
+            return _imageService.GetImages(page, count);
         }
 
         // GET api/<ImagesController>/5

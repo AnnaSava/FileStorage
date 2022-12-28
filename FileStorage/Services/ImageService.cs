@@ -15,21 +15,36 @@ namespace FileStorage.Services
         private readonly IImageRepository _imageRepository;
         private readonly ImageEditor _imageEditor;
         private readonly FileProcessingService _fileProcessingService;
+        private readonly FileServerSettings _settings;
 
         public ImageService(IImageRepository imageRepository,
             ImageEditor imageEditor,
-            FileProcessingService fileProcessingService)
+            FileProcessingService fileProcessingService,
+            FileServerSettings settings)
         {
             _imageRepository = imageRepository;
             
             _imageEditor = imageEditor;
             _fileProcessingService = fileProcessingService;
+
+            _settings = settings;
         }
 
         //TODO async???
         public IEnumerable<ImageModel> GetImages(int page = 1, int count = 24)
         {
-            var images = _imageRepository.GetImages(page, count);
+            List<ImageModel> images = _imageRepository.GetImages(page, count).ToList();
+
+            foreach(var img in images)
+            {
+                img.PreviewId = string.Format(_settings.UriPattern, img.PreviewId);
+
+                foreach(var file in img.Files)
+                {
+                    file.FileId = string.Format(_settings.UriPattern, file.FileId);
+                }
+            }
+
             return images;
         }
 

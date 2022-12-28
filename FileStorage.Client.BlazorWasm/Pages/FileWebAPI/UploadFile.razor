@@ -4,7 +4,7 @@
 @using FileStorage.Models
 @using Microsoft.Extensions.Logging
 @inject HttpClient Http
-@inject ILogger<Upload> Logger
+@inject ILogger<UploadFile> Logger
 @inject IHttpClientFactory _httpClientFactory
 
 <h1>Upload Files</h1>
@@ -131,7 +131,7 @@
     }
 
     private static bool FileUpload(IList<UploadResultModel> uploadResults,
-        string? fileName, ILogger<Upload> logger, out UploadResultModel result)
+        string? fileName, ILogger<UploadFile> logger, out UploadResultModel result)
     {
         result = uploadResults.SingleOrDefault(f => f.FileName == fileName) ?? new();
 

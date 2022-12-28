@@ -1,4 +1,4 @@
-﻿@page "/images"
+﻿@page "/images/{page?}"
 @using FileStorage.Models
 @inject HttpClient Http
 @inject IHttpClientFactory _httpClientFactory
@@ -7,7 +7,8 @@
 
 <h1>Image gallery</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p>Получает изображения (Images) из FileStorage.ImageServer.WebAPI</p>
+<p>Файлы изображений (StoredFiles) подгружаются из FileStorage.FileServer.DownloadAPI</p>
 
 @if (images == null)
 {
@@ -27,19 +28,39 @@ else
             {
                 <tr>
                     <td>@image.Id</td>
-                    <td><img src="https://localhost:7063/files/@image.PreviewId" style="width:150px;height:150px"/></td>
+                    <td><img src="@image.PreviewId" style="width:150px;height:150px"/></td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
+<p>Page @curPage</p>
+
+<a onclick="@(async ()=> await Paginate())">Next</a>
+
 @code {
+    [Parameter]
+    public string Page{ get; set; }
+
     private ImageModel[]? images;
+
+    private int curPage;
 
     protected override async Task OnInitializedAsync()
     {
+        if (!int.TryParse(Page, out curPage))
+            curPage = 1;
+
         var httpClient = _httpClientFactory.CreateClient("Images");
-        images = await httpClient.GetFromJsonAsync<ImageModel[]>("images");
+        images = await httpClient.GetFromJsonAsync<ImageModel[]>("images?page="+curPage+"&count=20");
+    }
+
+    private async Task Paginate()
+    {
+        curPage++;
+
+        var httpClient = _httpClientFactory.CreateClient("Images");
+        images = await httpClient.GetFromJsonAsync<ImageModel[]>("images?page="+curPage+"&count=20");
     }
 }
