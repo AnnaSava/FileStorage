@@ -1,0 +1,30 @@
+﻿@page "/image/{id}"
+@using FileStorage.Models
+@inject IHttpClientFactory _httpClientFactory
+
+<h3>View</h3>
+
+@if(Image != null)
+{
+    <p>@Image.Id</p>
+    <p><img src="@Image.PreviewId"/></p>
+
+    @foreach(var file in Image.Files)
+    {
+        <p><img src="@file.FileId" /></p>
+    }
+}
+
+@code {
+    [Parameter]
+    public string Id {get;set;}
+
+    private ImageModel Image;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var httpClient = _httpClientFactory.CreateClient("Images");
+        Image = await httpClient.GetFromJsonAsync<ImageModel>("images/"+Id);
+    }
+
+}

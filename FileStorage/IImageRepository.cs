@@ -12,5 +12,7 @@ namespace FileStorage
         Task<string> Create(ImageModel model);
 
         IEnumerable<ImageModel> GetImages(int page, int count);
+
+        ImageModel GetImage(string id);
     }
 }

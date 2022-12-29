@@ -71,5 +71,25 @@ namespace FileStorage.Data.MongoDb
                 }).ToList()
             });
         }
+
+        // TODO async???
+        public ImageModel GetImage(string id)
+        {
+            var images = Images.AsQueryable<Image>()
+                .Where(m=>m.Id == id).ToList();
+
+            return images.Select(m => new ImageModel
+            {
+                Id = m.Id,
+                PreviewId = m.PreviewId,
+                Files = m.Files.Select(f => new ImageFileModel
+                {
+                    FileId = f.FileId,
+                    Type = f.Type,
+                    Height = f.Height,
+                    Width = f.Width
+                }).ToList()
+            }).FirstOrDefault();
+        }
     }
 }

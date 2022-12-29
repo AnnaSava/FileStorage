@@ -42,9 +42,9 @@ namespace FileStorage.FileService.WebAPI.Controllers
 
         // GET api/<ImagesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ImageModel Get(string id)
         {
-            return "value";
+            return _imageService.GetImage(id);
         }
 
         // POST api/<ImagesController>

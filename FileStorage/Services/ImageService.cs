@@ -48,6 +48,20 @@ namespace FileStorage.Services
             return images;
         }
 
+        public ImageModel GetImage(string id)
+        {
+            var img = _imageRepository.GetImage(id);
+
+            img.PreviewId = string.Format(_settings.UriPattern, img.PreviewId);
+
+            foreach (var file in img.Files)
+            {
+                file.FileId = string.Format(_settings.UriPattern, file.FileId);
+            }
+
+            return img;
+        }
+
         public async Task SaveImage(byte[] content)
         {
             var storedImageFiles = new Dictionary<string, StoredFileModel>();

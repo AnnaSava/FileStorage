@@ -27,7 +27,7 @@ else
             @foreach (var image in images)
             {
                 <tr>
-                    <td>@image.Id</td>
+                    <td><a href="/image/@image.Id">@image.Id</a></td>
                     <td><img src="@image.PreviewId" style="width:150px;height:150px"/></td>
                 </tr>
             }
