@@ -24,6 +24,9 @@ builder.Services.Configure<FileServerSettings>(
 
 builder.Services.AddSingleton<FileServerSettings>(sp => sp.GetRequiredService<IOptions<FileServerSettings>>().Value);
 
+
+builder.Services.Configure<RabbitMqConfiguration>(builder.Configuration.GetSection("RabbitMq"));
+
 // TODO Почему синглтон?
 builder.Services.AddSingleton<IFileRepository, FileRepository>();
 
@@ -46,6 +49,8 @@ switch (imageServiceConf)
         builder.Services.AddScoped<IImageService, ImageFileTransferService>();
         break;
     case "ImageFileQueueService":
+        builder.Services.AddScoped<FileQueueService>();
+        builder.Services.AddScoped<IImageService, ImageFileQueueService>();
         break;
     default:
         break;

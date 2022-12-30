@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.FileServer.WebA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.ImageServer.WebAPI", "FileStorage.ImageServer.WebAPI\FileStorage.ImageServer.WebAPI.csproj", "{370A654F-6CF7-476F-9675-13DCED7C8AE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.FileServer.UploadViaRabbitMQ", "FileStorage.FileServer.UploadViaRabbitMQ\FileStorage.FileServer.UploadViaRabbitMQ.csproj", "{7167AD65-78FC-4F75-A795-35CEA60105E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{370A654F-6CF7-476F-9675-13DCED7C8AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{370A654F-6CF7-476F-9675-13DCED7C8AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{370A654F-6CF7-476F-9675-13DCED7C8AE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7167AD65-78FC-4F75-A795-35CEA60105E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7167AD65-78FC-4F75-A795-35CEA60105E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7167AD65-78FC-4F75-A795-35CEA60105E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7167AD65-78FC-4F75-A795-35CEA60105E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
