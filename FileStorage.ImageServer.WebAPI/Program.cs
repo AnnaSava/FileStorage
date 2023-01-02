@@ -50,6 +50,7 @@ switch (imageServiceConf)
         break;
     case "ImageFileQueueService":
         builder.Services.AddScoped<FileQueueService>();
+        builder.Services.AddScoped<FileEasyNetQueueService>();
         builder.Services.AddScoped<IImageService, ImageFileQueueService>();
         break;
     default:

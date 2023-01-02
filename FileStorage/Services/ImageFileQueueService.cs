@@ -13,17 +13,20 @@ namespace FileStorage.Services
         private readonly IImageRepository _imageRepository;
         private readonly ImageEditor _imageEditor;
         private readonly FileQueueService _fileQueueService;
+        private readonly FileEasyNetQueueService _fileqTransferService;
         private readonly FileServerSettings _settings;
 
         public ImageFileQueueService(
             IImageRepository imageRepository,
             ImageEditor imageEditor,
             FileQueueService fileTransferService,
+            FileEasyNetQueueService fileqTransferService,
             FileServerSettings settings)
         {
             _imageRepository = imageRepository;
             _imageEditor = imageEditor;
             _fileQueueService = fileTransferService;
+            _fileqTransferService = fileqTransferService;
             _settings = settings;
         }
 
@@ -125,7 +128,8 @@ namespace FileStorage.Services
                 Content = content,
             };
 
-            _fileQueueService.Send(fileTask);
+            //_fileQueueService.Send(fileTask);
+            _fileqTransferService.Publish(fileTask);
 
             return null;
         }
