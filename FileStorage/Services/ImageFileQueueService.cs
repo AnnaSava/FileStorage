@@ -129,9 +129,9 @@ namespace FileStorage.Services
             };
 
             //_fileQueueService.Send(fileTask);
-            _fileqTransferService.Publish(fileTask);
+            var result = await _fileqTransferService.Send(fileTask);
 
-            return null;
+            return result;
         }
     }
 }

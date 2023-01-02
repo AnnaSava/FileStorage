@@ -11,20 +11,12 @@ namespace FileStorage.Services
 {
     public class FileEasyNetQueueService
     {
-        public void Publish(FileTaskModel fileTask)
+        public async Task<StoredFileModel> Send(FileTaskModel fileTask)
         {
-            //try
-            //{
-            //    var b = RabbitHutch.CreateBus("host=localhost;port=8080");
-            //}
-            //catch (Exception ex)
-            //{
-            //    var t = ex.Message;
-            //}
-
             using (var bus = RabbitHutch.CreateBus("host=localhost"))
             {
-                bus.PubSub.Publish(fileTask);
+                var result = await bus.Rpc.RequestAsync<FileTaskModel, StoredFileModel>(fileTask);
+                return result;
             }
         }
     }
